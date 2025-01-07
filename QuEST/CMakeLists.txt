@@ -62,9 +62,13 @@ endif()
 # ----- FATAL -----------------------------------------------------------------
 
 if (${DISTRIBUTED} AND ${GPUACCELERATED})
-    message(FATAL_ERROR "DISTRIBUTED=${DISTRIBUTED} and \
-        GPUACCELERATED=${GPUACCELERATED} set but \
-        distributed GPU acceleration not supported. Aborting")
+    # Added DISTRIBUTED + GPUACCELERATED support for KISTI benchmarks only
+    # message(FATAL_ERROR "DISTRIBUTED=${DISTRIBUTED} and \
+    #     GPUACCELERATED=${GPUACCELERATED} set but \
+    #     distributed GPU acceleration not supported. Aborting")
+    message(WARNING "DISTRIBUTED=${DISTRIBUTED} and \
+    GPUACCELERATED=${GPUACCELERATED} are both set. This is supported only for the KISTI benchmarks. \
+    To return to safety, set DISTRIBUTED=0") 
 endif()
 
 if ( NOT(${PRECISION} EQUAL 1) AND
@@ -117,29 +121,40 @@ if (DISTRIBUTED)
     set (MPIEXEC_EXECUTABLE ${MPIEXEC} CACHE STRING "MPI Executable")
   endif()
   include_directories(${MPI_INCLUDE_PATH})
+  ADD_DEFINITIONS( -DDISTRIBUTED )
 endif()
 
 if (GPUACCELERATED)
   if (USE_HIP)
-
-    if(NOT DEFINED HIP_PATH)
-      if(NOT DEFINED ENV{HIP_PATH})
-        message(WARNING "WARNING: HIP_PATH is not defiend. Using default HIP_PATH=/opt/rocm/hip    " ${HIP_VERSION})
-        set(HIP_PATH "/opt/rocm/hip" CACHE PATH "Path to which HIP has been installed")
+    
+    if(NOT DEFINED ROCM_PATH)
+      if(NOT DEFINED ENV{ROCM_PATH})
+        message(WARNING "WARNING: ROCM_PATH is not defiend. Using default ROCM_PATH=/opt/rocm" )
+        set(ROCM_PATH "/opt/rocm" CACHE PATH "Path to which ROCm has been installed")
       else()
-        set(HIP_PATH $ENV{HIP_PATH}	CACHE PATH "Path to which HIP has been installed")
+        set(ROCM_PATH $ENV{ROCM_PATH}	CACHE PATH "Path to which ROCm has been installed")
       endif()
     endif()
 
-    if(EXISTS "${HIP_PATH}")
-      set(CMAKE_MODULE_PATH "${HIP_PATH}/cmake" ${CMAKE_MODULE_PATH})
+    if(EXISTS "${ROCM_PATH}")
+      set(CMAKE_MODULE_PATH "${ROCM_PATH}/lib/cmake/hip" ${CMAKE_MODULE_PATH})
       find_package(HIP REQUIRED)
       message(STATUS "Found HIP: " ${HIP_VERSION})
-      message(STATUS "HIP PATH: " ${HIP_PATH})
+      message(STATUS "ROCM PATH: " ${ROCM_PATH})
     endif()
-      
+
     ADD_DEFINITIONS( -DUSE_HIP )
     ADD_DEFINITIONS( -D__HIP_PLATFORM_AMD__ )
+
+    if (GPU_MPI)
+      message(STATUS "GPU Aware MPI is ON")
+      ADD_DEFINITIONS( -DGPU_MPI)
+    endif()
+
+    if (NO_CPU_ALLOC)
+      message(STATUS "WARNING: NO_CPU_ALLOC is ON. Memory on the CPU won't be allocated, only GPU memory will be allocated.")
+      ADD_DEFINITIONS( -DNO_CPU_ALLOC)
+    endif()
 
   elseif (USE_CUQUANTUM)
     find_package(CUDA REQUIRED)
@@ -188,6 +203,7 @@ if (GPUACCELERATED)
     endif()
 
     set(HIP_HIPCC_FLAGS "${HIP_HIPCC_FLAGS} -fPIC  --offload-arch=${GPU_ARCH}" )
+    set(HIP_HIPCC_FLAGS "${HIP_HIPCC_FLAGS} -Wno-unused-result -Wno-return-type" )
     if ("${CMAKE_BUILD_TYPE}" STREQUAL "Release")
       set (HIP_HIPCC_FLAGS "${HIP_HIPCC_FLAGS} \
           -O2"
@@ -422,7 +438,7 @@ target_link_libraries(QuEST PUBLIC ${MPI_C_LIBRARIES})
 
 # ----- GPU -------------------------------------------------------------------
 if (USE_HIP)
-  target_link_libraries(QuEST PUBLIC  ${HIP_PATH}/lib/libamdhip64.so )
+  target_link_libraries(QuEST PUBLIC  ${ROCM_PATH}/lib/libamdhip64.so )
 elseif (USE_CUQUANTUM)
   find_library(CUQUANTUM_LIBRARIES custatevec)
   if (NOT CUQUANTUM_LIBRARIES)

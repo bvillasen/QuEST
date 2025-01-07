@@ -13,6 +13,10 @@
 # include "QuEST_validation.h"
 # include "QuEST_internal.h"
 
+#ifdef DISTRIBUTED
+# include "QuEST_gpu_distributed.h" //KISTI_DISTRIBUTED
+#endif //DISTRIBUTED
+
 # include <stdlib.h>
 # include <stdio.h>
 # include <math.h>
@@ -157,7 +161,138 @@ extern "C" {
 
 
 
+// Functions needed for the distributed version of the operators
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+#ifdef DISTRIBUTED
+static int isChunkToSkipInFindPZero(int chunkId, long long int chunkSize, int measureQubit);
+static int chunkIsUpper(int chunkId, long long int chunkSize, int targetQubit);
+static int halfMatrixBlockFitsInChunk(long long int chunkSize, int targetQubit);
+static int getChunkPairId(int chunkIsUpper, int chunkId, long long int chunkSize, int targetQubit);
+static void getRotAngle(int chunkIsUpper, Complex *rot1, Complex *rot2, Complex alpha, Complex beta);
+
+// Copied from QuEST_cpu_distributed.c
+static int halfMatrixBlockFitsInChunk(long long int chunkSize, int targetQubit)
+{
+    long long int sizeHalfBlock = 1LL << (targetQubit);
+    if (chunkSize > sizeHalfBlock) return 1;
+    else return 0;
+}
+
+// Copied from QuEST_cpu_distributed.c
+static int chunkIsUpper(int chunkId, long long int chunkSize, int targetQubit)
+{       
+    long long int sizeHalfBlock = 1LL << (targetQubit);
+    long long int sizeBlock = sizeHalfBlock*2;
+    long long int posInBlock = (chunkId*chunkSize) % sizeBlock;
+    return posInBlock<sizeHalfBlock;
+}
+
+// Copied from QuEST_cpu_distributed.c
+static int getChunkPairId(int chunkIsUpper, int chunkId, long long int chunkSize, int targetQubit)
+{
+    long long int sizeHalfBlock = 1LL << (targetQubit);
+    int chunksPerHalfBlock = sizeHalfBlock/chunkSize;
+    if (chunkIsUpper){
+        return chunkId + chunksPerHalfBlock;
+    } else {
+        return chunkId - chunksPerHalfBlock;
+    }
+}
+
+// Copied from QuEST_cpu_distributed.c
+static void getRotAngle(int chunkIsUpper, Complex *rot1, Complex *rot2, Complex alpha, Complex beta)
+{
+    if (chunkIsUpper){
+        *rot1=alpha;
+        rot2->real=-beta.real;
+        rot2->imag=-beta.imag;
+    } else {
+        *rot1=beta;
+        *rot2=alpha;
+    }
+}
+
+// Copied from QuEST_cpu_distributed.c
+static int isChunkToSkipInFindPZero(int chunkId, long long int chunkSize, int measureQubit)
+{
+    long long int sizeHalfBlock = 1LL << (measureQubit);
+    int numChunksToSkip = sizeHalfBlock/chunkSize;
+    // calculate probability by summing over numChunksToSkip, then skipping numChunksToSkip, etc
+    int bitToCheck = chunkId & numChunksToSkip;
+    return bitToCheck;
+}
+
+#endif
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+// KISTI_DISTRIBUTED
+// Initialize multiple GPUs when using DISTRIBUTED
+int initializeGPUs( QuESTEnv env ){
+    
+    int deviceCount, device;
+    int gpuDeviceCount = 0;
+    struct cudaDeviceProp properties;
+    cudaError_t cudaResultCode = cudaGetDeviceCount(&deviceCount);
+    if (cudaResultCode != cudaSuccess) deviceCount = 0;
+    /* machines with no GPUs can still report one emulation device */
+    for (device = 0; device < deviceCount; ++device) {
+        cudaGetDeviceProperties(&properties, device);
+        if (properties.major != 9999) { /* 9999 means emulation only */
+            ++gpuDeviceCount;
+        }
+    }
+    if (!gpuDeviceCount){
+        printf("ERROR: No GPUs found in system. Aborting.\n");
+        exit(-1);
+    }
+
+    int rank = env.rank;
+    // int deviceId = rank % gpuDeviceCount;
+    int deviceId = env.inNodeRank; // Updated to run with round-robin placement of MPI ranks over the nodes
+    cudaSetDevice(deviceId);
+    #ifdef PRINT_DEVICE_ID 
+    printf( " Rank: %d   device Id: %d   num devices: %d \n", rank, deviceId, gpuDeviceCount );    
+    #endif
+
+    #ifdef DISTRIBUTED
+    synchronizeMPI();
+    #endif
+    return 1;
+}
+
+void deviceSynchronize(void){
+    cudaDeviceSynchronize();
+}
+
+void copyPairStateToGPU(Qureg qureg)
+{
+    if (DEBUG) printf("Copying data to GPU\n");
+    cudaMemcpy(qureg.devicePairStateVec.real, qureg.pairStateVec.real, 
+            qureg.numAmpsPerChunk*sizeof(*(qureg.devicePairStateVec.real)), cudaMemcpyHostToDevice);
+    cudaMemcpy(qureg.devicePairStateVec.imag, qureg.pairStateVec.imag, 
+            qureg.numAmpsPerChunk*sizeof(*(qureg.devicePairStateVec.imag)), cudaMemcpyHostToDevice);
+    if (DEBUG) printf("Finished copying data to GPU\n");
+}
+
+void copy_qrealFromGPU( qreal *dst, qreal *src, long long int n_bytes ){
+    cudaMemcpy(dst, src, n_bytes, cudaMemcpyDeviceToHost);
+}
+
 QuESTEnv createQuESTEnv(void) {
+
+    #ifdef DISTRIBUTED // KISTI_DISTRIBUTED
+
+    QuESTEnv env = createQuESTEnvDistributed();
+    if (env.rank == 0) printf( "Creating GPU Distributed environment. \n" );
+    
+    initializeGPUs( env );
+    
+    return env;
+    #else //NON-DISTRIBUTED
+
     validateGPUExists(GPUExists(), __func__);
     
     QuESTEnv env;
@@ -169,10 +304,15 @@ QuESTEnv createQuESTEnv(void) {
     seedQuESTDefault(&env);
 
     return env;
+    #endif //DISTRIBUTED
 }
 
 void destroyQuESTEnv(QuESTEnv env){
     free(env.seeds);
+
+    #ifdef DISTRIBUTED
+    finalizeMPI();
+    #endif //DISTRIBUTED
 }
 
 void statevec_setAmps(Qureg qureg, long long int startInd, qreal* reals, qreal* imags, long long int numAmps) {
@@ -271,13 +411,21 @@ void statevec_createQureg(Qureg *qureg, int numQubits, QuESTEnv env)
     // allocate CPU memory
     long long int numAmps = 1L << numQubits;
     long long int numAmpsPerRank = numAmps/env.numRanks;
+
+    #ifdef NO_CPU_ALLOC
+    if (env.rank == 0)printf("WARNING: No CPU allocation for stateVec arrays \n");
+    qureg->stateVec.real = nullptr;
+    qureg->stateVec.imag = nullptr;
+    qureg->pairStateVec.real = nullptr;
+    qureg->pairStateVec.imag = nullptr;
+    #else
     qureg->stateVec.real = (qreal*) malloc(numAmpsPerRank * sizeof(qureg->stateVec.real));
     qureg->stateVec.imag = (qreal*) malloc(numAmpsPerRank * sizeof(qureg->stateVec.imag));
     if (env.numRanks>1){
         qureg->pairStateVec.real = (qreal*) malloc(numAmpsPerRank * sizeof(qureg->pairStateVec.real));
         qureg->pairStateVec.imag = (qreal*) malloc(numAmpsPerRank * sizeof(qureg->pairStateVec.imag));
     }
-
+    #endif //NO_CPU_ALLOC
     qureg->numQubitsInStateVec = numQubits;
     qureg->numAmpsPerChunk = numAmpsPerRank;
     qureg->numAmpsTotal = numAmps;
@@ -286,7 +434,9 @@ void statevec_createQureg(Qureg *qureg, int numQubits, QuESTEnv env)
     qureg->isDensityMatrix = 0;
 
     // check cpu memory allocation was successful
+    #ifndef NO_CPU_ALLOC
     validateQuregAllocation(qureg, env, __func__);
+    #endif //NO_CPU_ALLOC
 
     // allocate GPU memory
     cudaMalloc(&(qureg->deviceStateVec.real), qureg->numAmpsPerChunk*sizeof(*(qureg->deviceStateVec.real)));
@@ -295,12 +445,28 @@ void statevec_createQureg(Qureg *qureg, int numQubits, QuESTEnv env)
     cudaMalloc(&(qureg->secondLevelReduction), ceil(qureg->numAmpsPerChunk/(qreal)(REDUCE_SHARED_SIZE*REDUCE_SHARED_SIZE))*
             sizeof(qreal));
 
+    #ifdef DISTRIBUTED
+    // allocate GPU pairSateVec for distributed version
+    if (qureg->numChunks>1){
+        cudaMalloc(&(qureg->devicePairStateVec.real), qureg->numAmpsPerChunk*sizeof(*(qureg->deviceStateVec.real)));
+        cudaMalloc(&(qureg->devicePairStateVec.imag), qureg->numAmpsPerChunk*sizeof(*(qureg->deviceStateVec.imag)));   
+    }
+    #endif //DISTRIBUTED
+
     // check gpu memory allocation was successful
     validateQuregGPUAllocation(qureg, env, __func__);
+
+    #ifdef TIMERS
+    qureg->mpi_time = (double *) malloc( sizeof(double) );
+    qureg->mpi_total_transfer_size = (double *) malloc( sizeof(double) );
+    *(qureg->mpi_time) = 0;
+    *(qureg->mpi_total_transfer_size) = 0;
+    #endif
 }
 
 void statevec_destroyQureg(Qureg qureg, QuESTEnv env)
 {
+    #ifndef NO_CPU_ALLOC
     // Free CPU memory
     free(qureg.stateVec.real);
     free(qureg.stateVec.imag);
@@ -308,6 +474,7 @@ void statevec_destroyQureg(Qureg qureg, QuESTEnv env)
         free(qureg.pairStateVec.real);
         free(qureg.pairStateVec.imag);
     }
+    #endif //NO_CPU_ALLOC
 
     // Free GPU memory
     cudaFree(qureg.deviceStateVec.real);
@@ -359,17 +526,27 @@ void statevec_copySubstateFromGPU(Qureg qureg, long long int startInd, long long
 }
 
 qreal statevec_getRealAmp(Qureg qureg, long long int index){
+    #ifdef DISTRIBUTED
+    qreal el = statevec_getRealAmpDistributed(qureg, index); 
+    return el;
+    #else
     qreal el=0;
     cudaMemcpy(&el, &(qureg.deviceStateVec.real[index]), 
             sizeof(*(qureg.deviceStateVec.real)), cudaMemcpyDeviceToHost);
     return el;
+    #endif //DISTRIBUTED
 }
 
 qreal statevec_getImagAmp(Qureg qureg, long long int index){
+    #ifdef DISTRIBUTED
+    qreal el = statevec_getImagAmpDistributed(qureg, index); 
+    return el;
+    #else
     qreal el=0;
     cudaMemcpy(&el, &(qureg.deviceStateVec.imag[index]), 
             sizeof(*(qureg.deviceStateVec.imag)), cudaMemcpyDeviceToHost);
     return el;
+    #endif //DISTRIBUTED
 }
 
 __global__ void statevec_initBlankStateKernel(long long int stateVecSize, qreal *stateVecReal, qreal *stateVecImag){
@@ -409,15 +586,40 @@ __global__ void statevec_initZeroStateKernel(long long int stateVecSize, qreal *
     }
 }
 
+__global__ void statevec_initZeroStateDistributedKernel( int chunkId, long long int stateVecSize, qreal *stateVecReal, qreal *stateVecImag){
+    long long int index;
+
+    // initialise the state to |0000..0000>
+    index = blockIdx.x*blockDim.x + threadIdx.x;
+    if (index>=stateVecSize) return;
+    stateVecReal[index] = 0.0;
+    stateVecImag[index] = 0.0;
+
+    // only the rank with chunkId == 0 initializes to 1
+    if ( chunkId==0 && index==0){
+        // zero state |0000..0000> has probability 1
+        stateVecReal[0] = 1.0;
+        stateVecImag[0] = 0.0;
+    }
+}
+
 void statevec_initZeroState(Qureg qureg)
 {
     int threadsPerCUDABlock, CUDABlocks;
     threadsPerCUDABlock = 128;
     CUDABlocks = ceil((qreal)(qureg.numAmpsPerChunk)/threadsPerCUDABlock);
-    statevec_initZeroStateKernel<<<CUDABlocks, threadsPerCUDABlock>>>(
-        qureg.numAmpsPerChunk, 
-        qureg.deviceStateVec.real, 
-        qureg.deviceStateVec.imag);
+    if (qureg.numChunks == 1){
+        statevec_initZeroStateKernel<<<CUDABlocks, threadsPerCUDABlock>>>(
+            qureg.numAmpsPerChunk, 
+            qureg.deviceStateVec.real, 
+            qureg.deviceStateVec.imag);
+    }else{
+        statevec_initZeroStateDistributedKernel<<<CUDABlocks, threadsPerCUDABlock>>>(
+            qureg.chunkId,
+            qureg.numAmpsPerChunk, 
+            qureg.deviceStateVec.real, 
+            qureg.deviceStateVec.imag);
+    }        
 }
 
 __global__ void statevec_initPlusStateKernel(long long int stateVecSize, qreal *stateVecReal, qreal *stateVecImag){
@@ -611,12 +813,106 @@ __global__ void statevec_controlledCompactUnitaryKernel (Qureg qureg, int contro
     }
 }
 
+
+#ifdef DISTRIBUTED
+
+// Similart to statevec_controlledUnitaryDistributed in QuEST_cpu.c but in a GPU kernel
+__global__ void statevec_controlledCompactUnitaryDistributedKernel(Qureg qureg, int controlQubit,
+                        Complex rot1, Complex rot2,
+                        ComplexArray deviceStateVecUp,
+                        ComplexArray deviceStateVecLo,
+                        ComplexArray deviceStateVecOut){
+
+    qreal   stateRealUp,stateRealLo,stateImagUp,stateImagLo;
+    long long int thisTask;  
+    long long int numTasks=qureg.numAmpsPerChunk;
+    long long int chunkSize=qureg.numAmpsPerChunk;
+    long long int chunkId=qureg.chunkId;
+
+    int controlBit;
+
+    qreal rot1Real=rot1.real, rot1Imag=rot1.imag;
+    qreal rot2Real=rot2.real, rot2Imag=rot2.imag;
+    qreal *stateVecRealUp=deviceStateVecUp.real, *stateVecImagUp=deviceStateVecUp.imag;
+    qreal *stateVecRealLo=deviceStateVecLo.real, *stateVecImagLo=deviceStateVecLo.imag;
+    qreal *stateVecRealOut=deviceStateVecOut.real, *stateVecImagOut=deviceStateVecOut.imag;
+
+    thisTask = blockIdx.x*blockDim.x + threadIdx.x;
+    if (thisTask>=numTasks) return;
+
+    controlBit = extractBit (controlQubit, thisTask+chunkId*chunkSize);
+    if (controlBit){
+        // store current state vector values in temp variables
+        stateRealUp = stateVecRealUp[thisTask];
+        stateImagUp = stateVecImagUp[thisTask];
+
+        stateRealLo = stateVecRealLo[thisTask];
+        stateImagLo = stateVecImagLo[thisTask];
+
+        // state[indexUp] = alpha * state[indexUp] - conj(beta)  * state[indexLo]
+        stateVecRealOut[thisTask] = rot1Real*stateRealUp - rot1Imag*stateImagUp + rot2Real*stateRealLo + rot2Imag*stateImagLo;
+        stateVecImagOut[thisTask] = rot1Real*stateImagUp + rot1Imag*stateRealUp + rot2Real*stateImagLo - rot2Imag*stateRealLo;
+    }
+}  
+
+// Similar to CPU version is statevec_controlledCompactUnitary in QuEST_cpu_distributed.c but using GPU for the calculations     
+void statevec_controlledCompactUnitaryDistributed(Qureg qureg, int controlQubit, int targetQubit, Complex alpha, Complex beta){
+
+    // Kernel launch parameters
+    int threadsPerCUDABlock, CUDABlocks;
+    threadsPerCUDABlock = 128;
+    
+    // flag to require memory exchange. 1: an entire block fits on one rank, 0: at most half a block fits on one rank
+    int useLocalDataOnly = halfMatrixBlockFitsInChunk(qureg.numAmpsPerChunk, targetQubit);
+    Complex rot1, rot2;
+
+    // rank's chunk is in upper half of block 
+    int rankIsUpper;
+    int pairRank; // rank of corresponding chunk
+
+    if (useLocalDataOnly){
+        // all values required to update state vector lie in this rank
+        CUDABlocks = ceil((qreal)(qureg.numAmpsPerChunk>>1)/threadsPerCUDABlock);
+        statevec_controlledCompactUnitaryKernel<<<CUDABlocks, threadsPerCUDABlock>>>(qureg, controlQubit, targetQubit, alpha, beta);
+    } else {
+        // need to get corresponding chunk of state vector from other rank
+        rankIsUpper = chunkIsUpper(qureg.chunkId, qureg.numAmpsPerChunk, targetQubit);
+        getRotAngle(rankIsUpper, &rot1, &rot2, alpha, beta);
+        pairRank = getChunkPairId(rankIsUpper, qureg.chunkId, qureg.numAmpsPerChunk, targetQubit);
+        //printf("%d rank has pair rank: %d\n", qureg.rank, pairRank);
+        // get corresponding values from my pair
+        exchangeDeviceStateVectors(qureg, pairRank);
+
+        // this rank's values are either in the upper of lower half of the block. send values to controlledCompactUnitaryDistributed
+        // in the correct order
+        CUDABlocks = ceil((qreal)(qureg.numAmpsPerChunk)/threadsPerCUDABlock);
+        if (rankIsUpper){
+            statevec_controlledCompactUnitaryDistributedKernel<<<CUDABlocks, threadsPerCUDABlock>>>(qureg,controlQubit,rot1,rot2,
+                    qureg.deviceStateVec, //upper
+                    qureg.devicePairStateVec, //lower
+                    qureg.deviceStateVec); //output
+        } else {
+            statevec_controlledCompactUnitaryDistributedKernel<<<CUDABlocks, threadsPerCUDABlock>>>(qureg,controlQubit,rot1,rot2,
+                    qureg.devicePairStateVec, //upper
+                    qureg.deviceStateVec, //lower
+                    qureg.deviceStateVec); //output
+        } 
+    }
+
+} 
+#endif //DISTRIBUTED
+
+
 void statevec_controlledCompactUnitary(Qureg qureg, int controlQubit, int targetQubit, Complex alpha, Complex beta) 
 {
+    #ifdef DISTRIBUTED
+    statevec_controlledCompactUnitaryDistributed(qureg, controlQubit, targetQubit, alpha, beta);
+    #else
     int threadsPerCUDABlock, CUDABlocks;
     threadsPerCUDABlock = 128;
     CUDABlocks = ceil((qreal)(qureg.numAmpsPerChunk>>1)/threadsPerCUDABlock);
     statevec_controlledCompactUnitaryKernel<<<CUDABlocks, threadsPerCUDABlock>>>(qureg, controlQubit, targetQubit, alpha, beta);
+    #endif
 }
 
 __global__ void statevec_unitaryKernel(Qureg qureg, int targetQubit, ArgMatrix2 u){
@@ -1060,12 +1356,72 @@ __global__ void statevec_pauliXKernel(Qureg qureg, int targetQubit){
     stateVecImag[indexLo] = stateImagUp;
 }
 
+#ifdef DISTRIBUTED
+
+__global__ void statevec_pauliXDistributedKernel(Qureg qureg,
+                                                 ComplexArray deviceStateVecIn,
+                                                 ComplexArray deviceStateVecOut){
+
+    long long int thisTask;        
+    long long int numTasks=qureg.numAmpsPerChunk;
+    
+    qreal *stateVecRealIn=deviceStateVecIn.real, *stateVecImagIn=deviceStateVecIn.imag;
+    qreal *stateVecRealOut=deviceStateVecOut.real, *stateVecImagOut=deviceStateVecOut.imag;
+
+    thisTask = blockIdx.x*blockDim.x + threadIdx.x;
+    if (thisTask>=numTasks) return;
+
+    stateVecRealOut[thisTask] = stateVecRealIn[thisTask];
+    stateVecImagOut[thisTask] = stateVecImagIn[thisTask];                                                
+}
+
+void statevec_pauliX_distributed(Qureg qureg, int targetQubit){
+
+    // Kernel launch parameters 
+    int threadsPerCUDABlock, CUDABlocks;
+    threadsPerCUDABlock = 128;
+
+    // flag to require memory exchange. 1: an entire block fits on one rank, 0: at most half a block fits on one rank
+    int useLocalDataOnly = halfMatrixBlockFitsInChunk(qureg.numAmpsPerChunk, targetQubit);
+
+    // rank's chunk is in upper half of block 
+    int rankIsUpper;
+    int pairRank; // rank of corresponding chunk
+
+    if (useLocalDataOnly){
+        // all values required to update state vector lie in this rank
+        CUDABlocks = ceil((qreal)(qureg.numAmpsPerChunk>>1)/threadsPerCUDABlock);
+        statevec_pauliXKernel<<<CUDABlocks, threadsPerCUDABlock>>>(qureg, targetQubit);
+    } else {
+        // printf("Exchange PauliX \n");
+        // need to get corresponding chunk of state vector from other rank
+        rankIsUpper = chunkIsUpper(qureg.chunkId, qureg.numAmpsPerChunk, targetQubit);
+        pairRank = getChunkPairId(rankIsUpper, qureg.chunkId, qureg.numAmpsPerChunk, targetQubit);
+        // printf("%d rank has pair rank: %d\n", qureg.chunkId, pairRank);
+        // get corresponding values from my pair
+        exchangeDeviceStateVectors(qureg, pairRank);
+        // this rank's values are either in the upper of lower half of the block. pauliX just replaces
+        // this rank's values with pair values
+        CUDABlocks = ceil((qreal)(qureg.numAmpsPerChunk)/threadsPerCUDABlock);
+        statevec_pauliXDistributedKernel<<<CUDABlocks, threadsPerCUDABlock>>>(qureg, 
+                                                                                qureg.devicePairStateVec, //in
+                                                                                qureg.deviceStateVec ); //out
+    }
+} 
+#endif //DISTRIBUTED
+
+
 void statevec_pauliX(Qureg qureg, int targetQubit) 
 {
+    #ifdef DISTRIBUTED
+    statevec_pauliX_distributed(qureg, targetQubit);
+    #else
     int threadsPerCUDABlock, CUDABlocks;
     threadsPerCUDABlock = 128;
     CUDABlocks = ceil((qreal)(qureg.numAmpsPerChunk>>1)/threadsPerCUDABlock);
     statevec_pauliXKernel<<<CUDABlocks, threadsPerCUDABlock>>>(qureg, targetQubit);
+    #endif //DISTRIBUTED
+    
 }
 
 __global__ void statevec_pauliYKernel(Qureg qureg, int targetQubit, int conjFac){
@@ -1526,12 +1882,95 @@ __global__ void statevec_hadamardKernel (Qureg qureg, int targetQubit){
     stateVecImag[indexLo] = recRoot2*(stateImagUp - stateImagLo);
 }
 
+#ifdef DISTRIBUTED
+
+
+__global__ void statevec_hadamardDistributedKernel (Qureg qureg,
+                            ComplexArray deviceStateVecUp,
+                            ComplexArray deviceStateVecLo,
+                            ComplexArray deviceStateVecOut,
+                            int updateUpper){
+
+    qreal   stateRealUp,stateRealLo,stateImagUp,stateImagLo;
+    long long int thisTask;  
+    long long int numTasks=qureg.numAmpsPerChunk;
+
+    int sign;
+    if (updateUpper) sign=1;
+    else sign=-1;
+
+    qreal recRoot2 = 1.0/sqrt(2.0);
+
+    qreal *stateVecRealUp=deviceStateVecUp.real, *stateVecImagUp=deviceStateVecUp.imag;
+    qreal *stateVecRealLo=deviceStateVecLo.real, *stateVecImagLo=deviceStateVecLo.imag;
+    qreal *stateVecRealOut=deviceStateVecOut.real, *stateVecImagOut=deviceStateVecOut.imag;
+
+    thisTask = blockIdx.x*blockDim.x + threadIdx.x;
+    if (thisTask>=numTasks) return;
+
+    // store current state vector values in temp variables
+    stateRealUp = stateVecRealUp[thisTask];
+    stateImagUp = stateVecImagUp[thisTask];
+
+    stateRealLo = stateVecRealLo[thisTask];
+    stateImagLo = stateVecImagLo[thisTask];
+
+    stateVecRealOut[thisTask] = recRoot2*(stateRealUp + sign*stateRealLo);
+    stateVecImagOut[thisTask] = recRoot2*(stateImagUp + sign*stateImagLo);
+}
+
+void statevec_hadamard_distributed(Qureg qureg, int targetQubit){
+    
+    // Kernel launch parameters
+    int threadsPerCUDABlock, CUDABlocks;
+    threadsPerCUDABlock = 128;
+
+    // flag to require memory exchange. 1: an entire block fits on one rank, 0: at most half a block fits on one rank
+    int useLocalDataOnly = halfMatrixBlockFitsInChunk(qureg.numAmpsPerChunk, targetQubit);
+
+    // rank's chunk is in upper half of block 
+    int rankIsUpper;
+    int pairRank; // rank of corresponding chunk
+
+    if (useLocalDataOnly){
+        // all values required to update state vector lie in this rank
+        CUDABlocks = ceil((qreal)(qureg.numAmpsPerChunk>>1)/threadsPerCUDABlock);
+        statevec_hadamardKernel<<<CUDABlocks, threadsPerCUDABlock>>>(qureg, targetQubit);    
+    }else {
+        // need to get corresponding chunk of state vector from other rank
+        rankIsUpper = chunkIsUpper(qureg.chunkId, qureg.numAmpsPerChunk, targetQubit);
+        pairRank = getChunkPairId(rankIsUpper, qureg.chunkId, qureg.numAmpsPerChunk, targetQubit);
+        //printf("%d rank has pair rank: %d\n", qureg.rank, pairRank);
+        // get corresponding values from my pair
+        exchangeDeviceStateVectors(qureg, pairRank);
+        // this rank's values are either in the upper of lower half of the block. send values to hadamardDistributed
+        // in the correct order
+        CUDABlocks = ceil((qreal)(qureg.numAmpsPerChunk)/threadsPerCUDABlock);
+        if (rankIsUpper){
+            statevec_hadamardDistributedKernel<<<CUDABlocks, threadsPerCUDABlock>>>(qureg,
+                    qureg.deviceStateVec, //upper
+                    qureg.devicePairStateVec, //lower
+                    qureg.deviceStateVec, rankIsUpper); //output
+        } else {
+            statevec_hadamardDistributedKernel<<<CUDABlocks, threadsPerCUDABlock>>>(qureg,
+                    qureg.devicePairStateVec, //upper
+                    qureg.deviceStateVec, //lower
+                    qureg.deviceStateVec, rankIsUpper); //output
+        }
+    }
+} 
+#endif //DISTRIBUTED
+
 void statevec_hadamard(Qureg qureg, int targetQubit) 
 {
+    #ifdef DISTRIBUTED
+    statevec_hadamard_distributed(qureg, targetQubit); 
+    #else
     int threadsPerCUDABlock, CUDABlocks;
     threadsPerCUDABlock = 128;
     CUDABlocks = ceil((qreal)(qureg.numAmpsPerChunk>>1)/threadsPerCUDABlock);
     statevec_hadamardKernel<<<CUDABlocks, threadsPerCUDABlock>>>(qureg, targetQubit);
+    #endif //DISTRIBUTED    
 }
 
 __global__ void statevec_controlledNotKernel(Qureg qureg, int controlQubit, int targetQubit)
@@ -1573,12 +2012,71 @@ __global__ void statevec_controlledNotKernel(Qureg qureg, int controlQubit, int 
     }
 }
 
+#ifdef DISTRIBUTED
+
+__global__ void statevec_controlledNotDistributedKernel(Qureg qureg, int controlQubit,
+                                                 ComplexArray deviceStateVecIn,
+                                                 ComplexArray deviceStateVecOut){
+    long long int thisTask;  
+    long long int numTasks=qureg.numAmpsPerChunk;
+    long long int chunkSize=qureg.numAmpsPerChunk;
+    long long int chunkId=qureg.chunkId;
+    
+    int controlBit;
+
+    qreal *stateVecRealIn=deviceStateVecIn.real, *stateVecImagIn=deviceStateVecIn.imag;
+    qreal *stateVecRealOut=deviceStateVecOut.real, *stateVecImagOut=deviceStateVecOut.imag;
+
+    thisTask = blockIdx.x*blockDim.x + threadIdx.x;
+    if (thisTask>=numTasks) return;
+
+    controlBit = extractBit (controlQubit, thisTask+chunkId*chunkSize);
+    if ( controlBit ){
+        stateVecRealOut[thisTask] = stateVecRealIn[thisTask];
+        stateVecImagOut[thisTask] = stateVecImagIn[thisTask];   
+    }
+}
+
+void statevec_controlledNot_distributed(Qureg qureg, int controlQubit, int targetQubit){
+
+    // Kernel launch parameters
+    int threadsPerCUDABlock, CUDABlocks;
+    threadsPerCUDABlock = 128;
+    CUDABlocks = ceil((qreal)(qureg.numAmpsPerChunk)/threadsPerCUDABlock);
+
+    // flag to require memory exchange. 1: an entire block fits on one rank, 0: at most half a block fits on one rank
+    int useLocalDataOnly = halfMatrixBlockFitsInChunk(qureg.numAmpsPerChunk, targetQubit);
+    int rankIsUpper; 	// rank's chunk is in upper half of block 
+    int pairRank; 		// rank of corresponding chunk
+
+    if (useLocalDataOnly){
+        // all values required to update state vector lie in this rank
+        statevec_controlledNotKernel<<<CUDABlocks, threadsPerCUDABlock>>>(qureg, controlQubit, targetQubit);
+    } else {
+        // need to get corresponding chunk of state vector from other rank
+        rankIsUpper = chunkIsUpper(qureg.chunkId, qureg.numAmpsPerChunk, targetQubit);
+        pairRank = getChunkPairId(rankIsUpper, qureg.chunkId, qureg.numAmpsPerChunk, targetQubit);
+
+        exchangeDeviceStateVectors(qureg, pairRank);
+
+        // Call the distributed version of the controlledNot kernel
+        statevec_controlledNotDistributedKernel<<<CUDABlocks, threadsPerCUDABlock>>>(qureg, controlQubit,
+                                                                                    qureg.devicePairStateVec, //in
+                                                                                    qureg.deviceStateVec ); //out 
+    }
+}
+#endif //DISTRIBUTED
+
 void statevec_controlledNot(Qureg qureg, int controlQubit, int targetQubit)
 {
+    #ifdef DISTRIBUTED
+    statevec_controlledNot_distributed(qureg, controlQubit, targetQubit);
+    #else
     int threadsPerCUDABlock, CUDABlocks;
     threadsPerCUDABlock = 128;
     CUDABlocks = ceil((qreal)(qureg.numAmpsPerChunk)/threadsPerCUDABlock);
     statevec_controlledNotKernel<<<CUDABlocks, threadsPerCUDABlock>>>(qureg, controlQubit, targetQubit);
+    #endif //DISTRIBUTED
 }
 
 __global__ void statevec_multiControlledMultiQubitNotKernel(Qureg qureg, int ctrlMask, int targMask) {
@@ -1861,12 +2359,122 @@ qreal statevec_findProbabilityOfZero(Qureg qureg, int measureQubit)
     return stateProb;
 }
 
+#ifdef DISTRIBUTED
+
+__global__ void statevec_findProbabilityOfZeroDistributedKernel(Qureg qureg, qreal *reducedArray) {
+
+    // ----- temp variables
+    long long int thisTask;                                   // task based approach for expose loop with small granularity
+    long long int numTasks=qureg.numAmpsPerChunk;
+    // (good for shared memory parallelism)
+
+    extern __shared__ qreal tempReductionArray[];
+
+    // ---------------------------------------------------------------- //
+    //            find probability                                      //
+    // ---------------------------------------------------------------- //
+
+    //
+    // --- task-based shared-memory parallel implementation
+    //
+
+    qreal *stateVecReal = qureg.deviceStateVec.real;
+    qreal *stateVecImag = qureg.deviceStateVec.imag;
+
+    thisTask = blockIdx.x*blockDim.x + threadIdx.x;
+    if (thisTask>=numTasks) return;
+
+    qreal realVal, imagVal;
+    realVal = stateVecReal[thisTask];
+    imagVal = stateVecImag[thisTask];  
+    tempReductionArray[threadIdx.x] = realVal*realVal + imagVal*imagVal;
+    __syncthreads();
+
+    if (threadIdx.x<blockDim.x/2){
+        reduceBlock(tempReductionArray, reducedArray, blockDim.x);
+    }
+}
+
+qreal statevec_findProbabilityOfZeroDistributed(Qureg qureg){
+
+    qreal stateProb=0;
+    
+    // 1-qubit edge-case breaks below loop logic
+    if (qureg.numQubitsInStateVec == 1) {
+        qreal amp;
+        cudaMemcpy(&amp, qureg.deviceStateVec.real, sizeof(qreal), cudaMemcpyDeviceToHost);
+        stateProb += amp*amp;
+        cudaMemcpy(&amp, qureg.deviceStateVec.imag, sizeof(qreal), cudaMemcpyDeviceToHost);
+        stateProb += amp*amp;
+        return stateProb;
+    }
+
+     long long int numValuesToReduce = qureg.numAmpsPerChunk;
+    int valuesPerCUDABlock, numCUDABlocks, sharedMemSize;
+    int firstTime=1;
+    int maxReducedPerLevel = REDUCE_SHARED_SIZE;
+
+    while(numValuesToReduce>1){ 
+        if (numValuesToReduce<maxReducedPerLevel){
+            // Need less than one CUDA block to reduce values
+            valuesPerCUDABlock = numValuesToReduce;
+            numCUDABlocks = 1;
+        } else {
+            // Use full CUDA blocks, with block size constrained by shared mem usage
+            valuesPerCUDABlock = maxReducedPerLevel;
+            numCUDABlocks = ceil((qreal)numValuesToReduce/valuesPerCUDABlock);
+        }
+        sharedMemSize = valuesPerCUDABlock*sizeof(qreal);
+
+        if (firstTime){
+            statevec_findProbabilityOfZeroDistributedKernel<<<numCUDABlocks, valuesPerCUDABlock, sharedMemSize>>>(
+                    qureg, qureg.firstLevelReduction);
+            firstTime=0;
+        } else {
+            cudaDeviceSynchronize();    
+            copySharedReduceBlock<<<numCUDABlocks, valuesPerCUDABlock/2, sharedMemSize>>>(
+                    qureg.firstLevelReduction, 
+                    qureg.secondLevelReduction, valuesPerCUDABlock); 
+            cudaDeviceSynchronize();    
+            swapDouble(&(qureg.firstLevelReduction), &(qureg.secondLevelReduction));
+        }
+        numValuesToReduce = numValuesToReduce/maxReducedPerLevel;
+    }
+    cudaMemcpy(&stateProb, qureg.firstLevelReduction, sizeof(qreal), cudaMemcpyDeviceToHost);
+    return stateProb;        
+
+}
+
+qreal statevec_calcProbOfOutcome_distributed(Qureg qureg, int measureQubit, int outcome){
+
+    qreal stateProb=0, totalStateProb=0;
+    int skipValuesWithinRank = halfMatrixBlockFitsInChunk(qureg.numAmpsPerChunk, measureQubit);
+    if (skipValuesWithinRank) {
+        stateProb = statevec_findProbabilityOfZero(qureg, measureQubit);
+    } else {
+        if (!isChunkToSkipInFindPZero(qureg.chunkId, qureg.numAmpsPerChunk, measureQubit)){
+            stateProb = statevec_findProbabilityOfZeroDistributed(qureg);
+        } else stateProb = 0;
+    }
+    totalStateProb = reduceStateProb( qureg, stateProb );
+    
+    if (outcome==1) totalStateProb = 1.0 - totalStateProb;
+    return totalStateProb;
+}
+
+#endif //DISTRIBUTED
+
 qreal statevec_calcProbOfOutcome(Qureg qureg, int measureQubit, int outcome)
 {
+    #ifdef DISTRIBUTED
+    qreal outcomeProb = statevec_calcProbOfOutcome_distributed(qureg, measureQubit, outcome);
+    return outcomeProb;    
+    #else
     qreal outcomeProb = statevec_findProbabilityOfZero(qureg, measureQubit);
     if (outcome==1)
         outcomeProb = 1.0 - outcomeProb;
     return outcomeProb;
+    #endif //DISTRIBUTED
 }
 
 qreal densmatr_calcProbOfOutcome(Qureg qureg, int measureQubit, int outcome)

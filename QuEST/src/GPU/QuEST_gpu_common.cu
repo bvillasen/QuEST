@@ -14,6 +14,11 @@
 # include "QuEST_internal.h"
 # include "mt19937ar.h"
 
+#ifdef DISTRIBUTED
+# include "QuEST_gpu_distributed.h" //KISTI_DISTRIBUTED
+#endif //DISTRIBUTED
+
+
 # include <stdlib.h>
 # include <stdio.h>
 # include <math.h>
@@ -96,6 +101,10 @@ int GPUExists(void) {
 
 void syncQuESTEnv(QuESTEnv env){
     cudaDeviceSynchronize();
+    
+    #ifdef DISTRIBUTED 
+    synchronizeMPI();
+    #endif //DISTRIBUTED 
 } 
 
 int syncQuESTSuccess(int successCode){
@@ -103,6 +112,7 @@ int syncQuESTSuccess(int successCode){
 }
 
 void reportQuESTEnv(QuESTEnv env){
+    if (env.rank >0 ) return;
     printf("EXECUTION ENVIRONMENT:\n");
     printf("Running locally on one node with GPU ");
 # ifdef USE_CUQUANTUM
@@ -117,6 +127,8 @@ void reportQuESTEnv(QuESTEnv env){
 # else
     printf("OpenMP disabled\n");
 # endif
+    // Added by Bruno Villasenor to match the CPU output
+    printf("Precision: size of qreal is %ld bytes\n", sizeof(qreal)); 
 }
 	
 void getEnvironmentString(QuESTEnv env, char str[200]){

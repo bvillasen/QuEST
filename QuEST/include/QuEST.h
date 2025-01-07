@@ -35,6 +35,7 @@
 # include "QuEST_precision.h"
 
 
+# define TIMERS // Collect MPI time KISTI
 
 // ensure custatevecHandle_t is defined, even if no GPU
 # ifdef USE_CUQUANTUM
@@ -382,6 +383,10 @@ typedef struct Qureg
     
     //! Storage for wavefunction amplitudes in the GPU version
     ComplexArray deviceStateVec;
+
+   //! Storage for a chunk of the state vector received form another in the GPU Distributed version
+    ComplexArray devicePairStateVec;
+
     //! Storage for reduction of probabilities on GPU
     qreal *firstLevelReduction, *secondLevelReduction;
 
@@ -392,7 +397,11 @@ typedef struct Qureg
 
     //! Storage for generated QASM output
     QASMLogger* qasmLog;
-    
+
+   #ifdef TIMERS
+   double *mpi_time;
+   double *mpi_total_transfer_size;
+   #endif
 } Qureg;
 
 /** Information about the environment the program is running in.
@@ -411,6 +420,11 @@ typedef struct QuESTEnv
 
     // a copy of the QuESTEnv's config, used only in cuQuantum deployment
     CuQuantumConfig* cuConfig;
+
+    // KISTI_DISTRIBUTED  
+    // Used to set the deviceId when running with 
+    // multiple nodes and multiple GPUs per node   
+    int inNodeRank; 
     
 } QuESTEnv;
 
@@ -7419,6 +7433,15 @@ void applyQFT(Qureg qureg, int* qubits, int numQubits);
  * @author Tyson Jones
  */
 void applyProjector(Qureg qureg, int qubit, int outcome);
+
+// Added by Bruno V for KISTI_DISTRIBUTED
+///////////////////////////////////////////////////////////
+void deviceSynchronize(void);
+void copyPairStateToGPU(Qureg qureg);
+void copy_qrealFromGPU( qreal *dst, qreal *src, long long int n_bytes );
+void print_global_metric_statistics(qreal local_metric, QuESTEnv env );
+
+///////////////////////////////////////////////////////////
 
 // end prevention of C++ name mangling
 #ifdef __cplusplus

@@ -1316,6 +1316,13 @@ void statevec_createQureg(Qureg *qureg, int numQubits, QuESTEnv env)
     qureg->isDensityMatrix = 0;
 
     validateQuregAllocation(qureg, env, __func__);
+
+    #ifdef TIMERS
+    qureg->mpi_time = (double *) malloc( sizeof(double) );
+    qureg->mpi_total_transfer_size = (double *) malloc( sizeof(double) );
+    *(qureg->mpi_time) = 0;
+    *(qureg->mpi_total_transfer_size) = 0;
+    #endif
 }
 
 void statevec_destroyQureg(Qureg qureg, QuESTEnv env){
