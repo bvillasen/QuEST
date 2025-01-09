@@ -1,0 +1,39 @@
+Creating GPU Distributed environment. 
+-------------------------------------------------------------------------------
+Running BMT:
+	Hadamard-test circuit: Getting expectation of a certain unitary
+-------------------------------------------------------------------------------
+WARNING: No CPU allocation for stateVec arrays 
+
+-------------------
+Basic Configuration
+-------------------
+QUBITS:
+Number of qubits is 31.
+Number of amps is 2147483648.
+Number of amps per rank is 1073741824.
+EXECUTION ENVIRONMENT:
+Running locally on one node with GPU via custom kernels
+Number of ranks is 2
+OpenMP disabled
+Precision: size of qreal is 8 bytes
+
+------------------
+Running Circuit...
+------------------
+
+----------------------------------
+Printing Amplitudes & Finishing...
+----------------------------------
+Probability of qubit 0 being in state 0: 0.542958
+Probability of qubit 0 being in state 1: 0.457042
+
+Time components:
+---------------------------------------------------
+Allocation & Initialization: 2.845707e-01 (seconds)
+Circuit Operation:           2.688790e+01 (seconds)
+Deallocation:                2.825440e-02 (seconds)
+---------------------------------------------------
+MPI time. min: 5.67   max: 5.68  avrg: 5.68 secs 
+MPI transfer size. min: 736.00   max: 736.00  avrg: 736.00 GB 
+MPI Bandwidth per rank. min: 129.59   max: 129.77  avrg: 129.68 GB/s 

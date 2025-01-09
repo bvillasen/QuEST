@@ -1,0 +1,72 @@
+[0;31mE20250107 16:28:09.590210 140211360377856 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit33_nnodes1_nmpi8/stats/rank_3/results_agent_info.csv
+[0;31mE20250107 16:28:09.591811 140088518781952 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit33_nnodes1_nmpi8/stats/rank_7/results_agent_info.csv
+[0;31mE20250107 16:28:09.592764 140107632225280 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit33_nnodes1_nmpi8/stats/rank_5/results_agent_info.csv
+[0;31mE20250107 16:28:09.594350 139795144690688 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit33_nnodes1_nmpi8/stats/rank_4/results_agent_info.csv
+[0;31mE20250107 16:28:09.594834 139638382074880 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit33_nnodes1_nmpi8/stats/rank_0/results_agent_info.csv
+[0;31mE20250107 16:28:09.596781 139895212522496 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit33_nnodes1_nmpi8/stats/rank_1/results_agent_info.csv
+[0;31mE20250107 16:28:09.597439 140148621663232 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit33_nnodes1_nmpi8/stats/rank_2/results_agent_info.csv
+[0;31mE20250107 16:28:09.604653 140405876022272 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit33_nnodes1_nmpi8/stats/rank_6/results_agent_info.csv
+[m[0;31mE20250107 16:28:09.605778 140211360377856 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit33_nnodes1_nmpi8/stats/rank_3/results_kernel_trace.csv
+[m[0;31mE20250107 16:28:09.619369 140211360377856 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit33_nnodes1_nmpi8/stats/rank_3/results_kernel_stats.csv
+[m[0;31mE20250107 16:28:09.631856 140088518781952 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit33_nnodes1_nmpi8/stats/rank_7/results_kernel_trace.csv
+[m[0;31mE20250107 16:28:09.633051 140107632225280 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit33_nnodes1_nmpi8/stats/rank_5/results_kernel_trace.csv
+[m[0;31mE20250107 16:28:09.633237 140211360377856 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit33_nnodes1_nmpi8/stats/rank_3/results_domain_stats.csv
+[m[0;31mE20250107 16:28:09.633522 139795144690688 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit33_nnodes1_nmpi8/stats/rank_4/results_kernel_trace.csv
+[m[0;31mE20250107 16:28:09.635931 139638382074880 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit33_nnodes1_nmpi8/stats/rank_0/results_kernel_trace.csv
+[m[0;31mE20250107 16:28:09.647262 139638382074880 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit33_nnodes1_nmpi8/stats/rank_0/results_kernel_stats.csv
+[m[0;31mE20250107 16:28:09.647212 140107632225280 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit33_nnodes1_nmpi8/stats/rank_5/results_kernel_stats.csv
+[m[0;31mE20250107 16:28:09.647173 140088518781952 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit33_nnodes1_nmpi8/stats/rank_7/results_kernel_stats.csv
+[m[0;31mE20250107 16:28:09.647391 139795144690688 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit33_nnodes1_nmpi8/stats/rank_4/results_kernel_stats.csv
+[m[0;31mE20250107 16:28:09.652704 139895212522496 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit33_nnodes1_nmpi8/stats/rank_1/results_kernel_trace.csv
+[m[0;31mE20250107 16:28:09.655958 140148621663232 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit33_nnodes1_nmpi8/stats/rank_2/results_kernel_trace.csv
+[m[0;31mE20250107 16:28:09.658505 139795144690688 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit33_nnodes1_nmpi8/stats/rank_4/results_domain_stats.csv
+[m[0;31mE20250107 16:28:09.658561 140107632225280 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit33_nnodes1_nmpi8/stats/rank_5/results_domain_stats.csv
+[m[0;31mE20250107 16:28:09.658700 139638382074880 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit33_nnodes1_nmpi8/stats/rank_0/results_domain_stats.csv
+[m[0;31mE20250107 16:28:09.658908 139895212522496 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit33_nnodes1_nmpi8/stats/rank_1/results_kernel_stats.csv
+[m[0;31mE20250107 16:28:09.658959 140405876022272 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit33_nnodes1_nmpi8/stats/rank_6/results_kernel_trace.csv
+[m[0;31mE20250107 16:28:09.659290 140088518781952 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit33_nnodes1_nmpi8/stats/rank_7/results_domain_stats.csv
+[m[0;31mE20250107 16:28:09.660245 140148621663232 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit33_nnodes1_nmpi8/stats/rank_2/results_kernel_stats.csv
+[m[0;31mE20250107 16:28:09.662969 139895212522496 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit33_nnodes1_nmpi8/stats/rank_1/results_domain_stats.csv
+[m[0;31mE20250107 16:28:09.663355 140148621663232 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit33_nnodes1_nmpi8/stats/rank_2/results_domain_stats.csv
+[m[0;31mE20250107 16:28:09.663561 140405876022272 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit33_nnodes1_nmpi8/stats/rank_6/results_kernel_stats.csv
+[m[0;31mE20250107 16:28:09.666678 140405876022272 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit33_nnodes1_nmpi8/stats/rank_6/results_domain_stats.csv
+[mCreating GPU Distributed environment. 
+-------------------------------------------------------------------------------
+Running BMT:
+	Hadamard-test circuit: Getting expectation of a certain unitary
+-------------------------------------------------------------------------------
+WARNING: No CPU allocation for stateVec arrays 
+
+-------------------
+Basic Configuration
+-------------------
+QUBITS:
+Number of qubits is 33.
+Number of amps is 8589934592.
+Number of amps per rank is 1073741824.
+EXECUTION ENVIRONMENT:
+Running locally on one node with GPU via custom kernels
+Number of ranks is 8
+OpenMP disabled
+Precision: size of qreal is 8 bytes
+
+------------------
+Running Circuit...
+------------------
+
+----------------------------------
+Printing Amplitudes & Finishing...
+----------------------------------
+Probability of qubit 0 being in state 0: 0.626953
+Probability of qubit 0 being in state 1: 0.373047
+
+Time components:
+---------------------------------------------------
+Allocation & Initialization: 2.953997e-01 (seconds)
+Circuit Operation:           8.035167e+01 (seconds)
+Deallocation:                2.928053e-02 (seconds)
+---------------------------------------------------
+MPI time. min: 52.66   max: 56.29  avrg: 54.45 secs 
+MPI transfer size. min: 2352.00   max: 2352.00  avrg: 2352.00 GB 
+MPI Bandwidth per rank. min: 41.78   max: 44.66  avrg: 43.23 GB/s 
+[m[m[m[m[m[m[m

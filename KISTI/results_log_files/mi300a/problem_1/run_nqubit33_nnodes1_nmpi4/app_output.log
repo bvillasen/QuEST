@@ -1,0 +1,139 @@
+MPI_RANK: 0  MPI_SIZE: 4
+1
+rank_local=  0   GOMP_CPU_AFFINITY=  0-0:1   HIP_VISIBLE_DEVICES=  0
+MPI_RANK: 1  MPI_SIZE: 4
+1
+rank_local=  1   GOMP_CPU_AFFINITY=  24-24:1   HIP_VISIBLE_DEVICES=  1
+MPI_RANK: 2  MPI_SIZE: 4
+1
+rank_local=  2   GOMP_CPU_AFFINITY=  48-48:1   HIP_VISIBLE_DEVICES=  2
+MPI_RANK: 3  MPI_SIZE: 4
+1
+rank_local=  3   GOMP_CPU_AFFINITY=  72-72:1   HIP_VISIBLE_DEVICES=  3
+Creating GPU Distributed environment. 
+---------------------------------------------------------------------------------
+Running BMT:
+	Basic circuit involving a sequential conduction of X & CNOT gates
+---------------------------------------------------------------------------------
+WARNING: No CPU allocation for stateVec arrays 
+
+-------------------
+Basic Configuration
+-------------------
+QUBITS:
+Number of qubits is 33.
+Number of amps is 8589934592.
+Number of amps per rank is 2147483648.
+EXECUTION ENVIRONMENT:
+Running locally on one node with GPU via custom kernels
+Number of ranks is 4
+OpenMP disabled
+Precision: size of qreal is 8 bytes
+
+------------------
+Running Circuit...
+------------------
+loop = 1
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 2
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 3
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 4
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 5
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 6
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 7
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 8
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 9
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 10
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 11
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 12
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 13
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 14
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 15
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 16
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 17
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 18
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 19
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 20
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 21
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 22
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 23
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 24
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 25
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 26
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 27
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 28
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 29
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 30
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+
+------------
+Finishing...
+------------
+
+Time components:
+---------------------------------------------------
+Allocation & Initialization: 3.309099e+00 (seconds)
+Circuit Operation:           8.191648e+01 (seconds)
+Deallocation:                2.014706e-03 (seconds)
+---------------------------------------------------
+MPI time. min: 45.99   max: 47.60  avrg: 46.59 secs 
+MPI transfer size. min: 3840.00   max: 3840.00  avrg: 3840.00 GB 
+MPI Bandwidth per rank. min: 80.67   max: 83.51  avrg: 82.44 GB/s 

@@ -1,0 +1,156 @@
+MPI_RANK: 0  MPI_SIZE: 4
+1
+rank_local=  0   GOMP_CPU_AFFINITY=  0-0:1   HIP_VISIBLE_DEVICES=  0
+MPI_RANK: 1  MPI_SIZE: 4
+1
+rank_local=  1   GOMP_CPU_AFFINITY=  24-24:1   HIP_VISIBLE_DEVICES=  1
+MPI_RANK: 2  MPI_SIZE: 4
+1
+rank_local=  2   GOMP_CPU_AFFINITY=  48-48:1   HIP_VISIBLE_DEVICES=  2
+MPI_RANK: 3  MPI_SIZE: 4
+1
+rank_local=  3   GOMP_CPU_AFFINITY=  72-72:1   HIP_VISIBLE_DEVICES=  3
+Creating GPU Distributed environment. 
+---------------------------------------------------------------------------------
+Running BMT:
+	Basic circuit involving a sequential conduction of X & CNOT gates
+---------------------------------------------------------------------------------
+WARNING: No CPU allocation for stateVec arrays 
+
+-------------------
+Basic Configuration
+-------------------
+QUBITS:
+Number of qubits is 33.
+Number of amps is 8589934592.
+Number of amps per rank is 2147483648.
+EXECUTION ENVIRONMENT:
+Running locally on one node with GPU via custom kernels
+Number of ranks is 4
+OpenMP disabled
+Precision: size of qreal is 8 bytes
+
+------------------
+Running Circuit...
+------------------
+loop = 1
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 2
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 3
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 4
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 5
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 6
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 7
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 8
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 9
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 10
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 11
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 12
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 13
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 14
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 15
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 16
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 17
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 18
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 19
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 20
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 21
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 22
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 23
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 24
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 25
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 26
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 27
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 28
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 29
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 30
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+
+------------
+Finishing...
+------------
+
+Time components:
+---------------------------------------------------
+Allocation & Initialization: 3.925626e+00 (seconds)
+Circuit Operation:           8.054147e+01 (seconds)
+Deallocation:                1.837666e-03 (seconds)
+---------------------------------------------------
+MPI time. min: 45.48   max: 46.15  avrg: 45.94 secs 
+MPI transfer size. min: 3840.00   max: 3840.00  avrg: 3840.00 GB 
+MPI Bandwidth per rank. min: 83.20   max: 84.43  avrg: 83.59 GB/s 
+[0;31mE20250108 21:49:22.443828 140013444794432 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_1/rocprofv3_nqubit33_nnodes1_nmpi4/stats/rank_0/results_agent_info.csv
+[m[0;31mE20250108 21:49:22.444450 140579554052160 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_1/rocprofv3_nqubit33_nnodes1_nmpi4/stats/rank_2/results_agent_info.csv
+[m[0;31mE20250108 21:49:22.446238 140013444794432 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_1/rocprofv3_nqubit33_nnodes1_nmpi4/stats/rank_0/results_kernel_stats.csv
+[m[0;31mE20250108 21:49:22.446422 140013444794432 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_1/rocprofv3_nqubit33_nnodes1_nmpi4/stats/rank_0/results_kernel_trace.csv
+[m[0;31mE20250108 21:49:22.446464 140579554052160 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_1/rocprofv3_nqubit33_nnodes1_nmpi4/stats/rank_2/results_kernel_stats.csv
+[m[0;31mE20250108 21:49:22.446655 140579554052160 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_1/rocprofv3_nqubit33_nnodes1_nmpi4/stats/rank_2/results_kernel_trace.csv
+[m[0;31mE20250108 21:49:22.455790 140013444794432 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_1/rocprofv3_nqubit33_nnodes1_nmpi4/stats/rank_0/results_domain_stats.csv
+[m[0;31mE20250108 21:49:22.456051 140579554052160 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_1/rocprofv3_nqubit33_nnodes1_nmpi4/stats/rank_2/results_domain_stats.csv
+[m[0;31mE20250108 21:49:22.699905 140219341101120 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_1/rocprofv3_nqubit33_nnodes1_nmpi4/stats/rank_3/results_agent_info.csv
+[m[0;31mE20250108 21:49:22.701536 140219341101120 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_1/rocprofv3_nqubit33_nnodes1_nmpi4/stats/rank_3/results_kernel_stats.csv
+[m[0;31mE20250108 21:49:22.701673 140219341101120 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_1/rocprofv3_nqubit33_nnodes1_nmpi4/stats/rank_3/results_kernel_trace.csv
+[m[0;31mE20250108 21:49:22.703562 140481658746944 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_1/rocprofv3_nqubit33_nnodes1_nmpi4/stats/rank_1/results_agent_info.csv
+[m[0;31mE20250108 21:49:22.705468 140481658746944 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_1/rocprofv3_nqubit33_nnodes1_nmpi4/stats/rank_1/results_kernel_stats.csv
+[m[0;31mE20250108 21:49:22.705618 140481658746944 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_1/rocprofv3_nqubit33_nnodes1_nmpi4/stats/rank_1/results_kernel_trace.csv
+[m[0;31mE20250108 21:49:22.705958 140219341101120 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_1/rocprofv3_nqubit33_nnodes1_nmpi4/stats/rank_3/results_domain_stats.csv
+[m[0;31mE20250108 21:49:22.709539 140481658746944 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_1/rocprofv3_nqubit33_nnodes1_nmpi4/stats/rank_1/results_domain_stats.csv
+[m

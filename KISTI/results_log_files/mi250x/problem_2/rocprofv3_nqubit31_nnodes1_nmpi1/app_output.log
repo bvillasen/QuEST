@@ -1,0 +1,44 @@
+[0;31mE20250107 16:23:32.627098 140136303062016 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit31_nnodes1_nmpi1/stats/rank_0/results_agent_info.csv
+[m[0;31mE20250107 16:23:32.641730 140136303062016 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit31_nnodes1_nmpi1/stats/rank_0/results_kernel_trace.csv
+[m[0;31mE20250107 16:23:32.644829 140136303062016 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit31_nnodes1_nmpi1/stats/rank_0/results_kernel_stats.csv
+[m[0;31mE20250107 16:23:32.648046 140136303062016 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit31_nnodes1_nmpi1/stats/rank_0/results_domain_stats.csv
+Creating GPU Distributed environment. 
+-------------------------------------------------------------------------------
+Running BMT:
+	Hadamard-test circuit: Getting expectation of a certain unitary
+-------------------------------------------------------------------------------
+WARNING: No CPU allocation for stateVec arrays 
+
+-------------------
+Basic Configuration
+-------------------
+QUBITS:
+Number of qubits is 31.
+Number of amps is 2147483648.
+Number of amps per rank is 2147483648.
+EXECUTION ENVIRONMENT:
+Running locally on one node with GPU via custom kernels
+Number of ranks is 1
+OpenMP disabled
+Precision: size of qreal is 8 bytes
+
+------------------
+Running Circuit...
+------------------
+
+----------------------------------
+Printing Amplitudes & Finishing...
+----------------------------------
+Probability of qubit 0 being in state 0: 0.542958
+Probability of qubit 0 being in state 1: 0.457042
+
+Time components:
+---------------------------------------------------
+Allocation & Initialization: 2.843933e-01 (seconds)
+Circuit Operation:           4.207562e+01 (seconds)
+Deallocation:                5.145591e-02 (seconds)
+---------------------------------------------------
+MPI time. min: 0.00   max: 0.00  avrg: 0.00 secs 
+MPI transfer size. min: 0.00   max: 0.00  avrg: 0.00 GB 
+MPI Bandwidth per rank. min: -nan   max: -nan  avrg: -nan GB/s 
+[m

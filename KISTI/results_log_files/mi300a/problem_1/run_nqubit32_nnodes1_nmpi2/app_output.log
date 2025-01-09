@@ -1,0 +1,133 @@
+MPI_RANK: 0  MPI_SIZE: 2
+1
+rank_local=  0   GOMP_CPU_AFFINITY=  0-0:1   HIP_VISIBLE_DEVICES=  0
+MPI_RANK: 1  MPI_SIZE: 2
+1
+rank_local=  1   GOMP_CPU_AFFINITY=  24-24:1   HIP_VISIBLE_DEVICES=  1
+Creating GPU Distributed environment. 
+---------------------------------------------------------------------------------
+Running BMT:
+	Basic circuit involving a sequential conduction of X & CNOT gates
+---------------------------------------------------------------------------------
+WARNING: No CPU allocation for stateVec arrays 
+
+-------------------
+Basic Configuration
+-------------------
+QUBITS:
+Number of qubits is 32.
+Number of amps is 4294967296.
+Number of amps per rank is 2147483648.
+EXECUTION ENVIRONMENT:
+Running locally on one node with GPU via custom kernels
+Number of ranks is 2
+OpenMP disabled
+Precision: size of qreal is 8 bytes
+
+------------------
+Running Circuit...
+------------------
+loop = 1
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 2
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 3
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 4
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 5
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 6
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 7
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 8
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 9
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 10
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 11
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 12
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 13
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 14
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 15
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 16
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 17
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 18
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 19
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 20
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 21
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 22
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 23
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 24
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 25
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 26
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 27
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 28
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 29
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 30
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+
+------------
+Finishing...
+------------
+
+Time components:
+---------------------------------------------------
+Allocation & Initialization: 4.340849e+00 (seconds)
+Circuit Operation:           5.789991e+01 (seconds)
+Deallocation:                1.863231e-03 (seconds)
+---------------------------------------------------
+MPI time. min: 22.81   max: 24.57  avrg: 23.69 secs 
+MPI transfer size. min: 1920.00   max: 1920.00  avrg: 1920.00 GB 
+MPI Bandwidth per rank. min: 78.13   max: 84.19  avrg: 81.16 GB/s 

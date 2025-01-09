@@ -1,0 +1,47 @@
+MPI_RANK: 0  MPI_SIZE: 1
+1
+rank_local=  0   GOMP_CPU_AFFINITY=  0-0:1   HIP_VISIBLE_DEVICES=  0
+Creating GPU Distributed environment. 
+-------------------------------------------------------------------------------
+Running BMT:
+	Hadamard-test circuit: Getting expectation of a certain unitary
+-------------------------------------------------------------------------------
+WARNING: No CPU allocation for stateVec arrays 
+
+-------------------
+Basic Configuration
+-------------------
+QUBITS:
+Number of qubits is 31.
+Number of amps is 2147483648.
+Number of amps per rank is 2147483648.
+EXECUTION ENVIRONMENT:
+Running locally on one node with GPU via custom kernels
+Number of ranks is 1
+OpenMP disabled
+Precision: size of qreal is 8 bytes
+
+------------------
+Running Circuit...
+------------------
+
+----------------------------------
+Printing Amplitudes & Finishing...
+----------------------------------
+Probability of qubit 0 being in state 0: 0.542958
+Probability of qubit 0 being in state 1: 0.457042
+
+Time components:
+---------------------------------------------------
+Allocation & Initialization: 1.441851e+00 (seconds)
+Circuit Operation:           1.474124e+01 (seconds)
+Deallocation:                9.773370e-02 (seconds)
+---------------------------------------------------
+MPI time. min: 0.00   max: 0.00  avrg: 0.00 secs 
+MPI transfer size. min: 0.00   max: 0.00  avrg: 0.00 GB 
+MPI Bandwidth per rank. min: -nan   max: -nan  avrg: -nan GB/s 
+[0;31mE20250108 21:52:48.830804 140231038994496 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_2/rocprofv3_nqubit31_nnodes1_nmpi1/stats/rank_0/results_agent_info.csv
+[m[0;31mE20250108 21:52:48.832546 140231038994496 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_2/rocprofv3_nqubit31_nnodes1_nmpi1/stats/rank_0/results_kernel_stats.csv
+[m[0;31mE20250108 21:52:48.832717 140231038994496 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_2/rocprofv3_nqubit31_nnodes1_nmpi1/stats/rank_0/results_kernel_trace.csv
+[m[0;31mE20250108 21:52:48.834847 140231038994496 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_2/rocprofv3_nqubit31_nnodes1_nmpi1/stats/rank_0/results_domain_stats.csv
+[m

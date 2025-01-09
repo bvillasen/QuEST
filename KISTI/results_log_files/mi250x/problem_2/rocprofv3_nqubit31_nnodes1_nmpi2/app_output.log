@@ -1,0 +1,48 @@
+[0;31mE20250107 16:23:25.408462 140202918607872 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit31_nnodes1_nmpi2/stats/rank_1/results_agent_info.csv
+[0;31mE20250107 16:23:25.409454 140589476252672 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit31_nnodes1_nmpi2/stats/rank_0/results_agent_info.csv
+[m[0;31mE20250107 16:23:25.429838 140589476252672 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit31_nnodes1_nmpi2/stats/rank_0/results_kernel_trace.csv
+[m[0;31mE20250107 16:23:25.429880 140202918607872 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit31_nnodes1_nmpi2/stats/rank_1/results_kernel_trace.csv
+[m[0;31mE20250107 16:23:25.432299 140589476252672 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit31_nnodes1_nmpi2/stats/rank_0/results_kernel_stats.csv
+[m[0;31mE20250107 16:23:25.433043 140202918607872 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit31_nnodes1_nmpi2/stats/rank_1/results_kernel_stats.csv
+[m[0;31mE20250107 16:23:25.435932 140589476252672 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit31_nnodes1_nmpi2/stats/rank_0/results_domain_stats.csv
+[m[0;31mE20250107 16:23:25.436203 140202918607872 output_file.cpp:69] Opened result file: /home/bvillase/benchmarks/quest/mi250x/problem_2/rocprofv3_nqubit31_nnodes1_nmpi2/stats/rank_1/results_domain_stats.csv
+Creating GPU Distributed environment. 
+-------------------------------------------------------------------------------
+Running BMT:
+	Hadamard-test circuit: Getting expectation of a certain unitary
+-------------------------------------------------------------------------------
+WARNING: No CPU allocation for stateVec arrays 
+
+-------------------
+Basic Configuration
+-------------------
+QUBITS:
+Number of qubits is 31.
+Number of amps is 2147483648.
+Number of amps per rank is 1073741824.
+EXECUTION ENVIRONMENT:
+Running locally on one node with GPU via custom kernels
+Number of ranks is 2
+OpenMP disabled
+Precision: size of qreal is 8 bytes
+
+------------------
+Running Circuit...
+------------------
+
+----------------------------------
+Printing Amplitudes & Finishing...
+----------------------------------
+Probability of qubit 0 being in state 0: 0.542958
+Probability of qubit 0 being in state 1: 0.457042
+
+Time components:
+---------------------------------------------------
+Allocation & Initialization: 2.843498e-01 (seconds)
+Circuit Operation:           2.684748e+01 (seconds)
+Deallocation:                2.967609e-02 (seconds)
+---------------------------------------------------
+MPI time. min: 5.63   max: 5.94  avrg: 5.79 secs 
+MPI transfer size. min: 736.00   max: 736.00  avrg: 736.00 GB 
+MPI Bandwidth per rank. min: 123.96   max: 130.64  avrg: 127.30 GB/s 
+[m[m

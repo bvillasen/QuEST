@@ -1,0 +1,68 @@
+MPI_RANK: 0  MPI_SIZE: 4
+1
+rank_local=  0   GOMP_CPU_AFFINITY=  0-0:1   HIP_VISIBLE_DEVICES=  0
+MPI_RANK: 1  MPI_SIZE: 4
+1
+rank_local=  1   GOMP_CPU_AFFINITY=  24-24:1   HIP_VISIBLE_DEVICES=  1
+MPI_RANK: 2  MPI_SIZE: 4
+1
+rank_local=  2   GOMP_CPU_AFFINITY=  48-48:1   HIP_VISIBLE_DEVICES=  2
+MPI_RANK: 3  MPI_SIZE: 4
+1
+rank_local=  3   GOMP_CPU_AFFINITY=  72-72:1   HIP_VISIBLE_DEVICES=  3
+Creating GPU Distributed environment. 
+-------------------------------------------------------------------------------
+Running BMT:
+	Hadamard-test circuit: Getting expectation of a certain unitary
+-------------------------------------------------------------------------------
+WARNING: No CPU allocation for stateVec arrays 
+
+-------------------
+Basic Configuration
+-------------------
+QUBITS:
+Number of qubits is 33.
+Number of amps is 8589934592.
+Number of amps per rank is 2147483648.
+EXECUTION ENVIRONMENT:
+Running locally on one node with GPU via custom kernels
+Number of ranks is 4
+OpenMP disabled
+Precision: size of qreal is 8 bytes
+
+------------------
+Running Circuit...
+------------------
+
+----------------------------------
+Printing Amplitudes & Finishing...
+----------------------------------
+Probability of qubit 0 being in state 0: 0.626953
+Probability of qubit 0 being in state 1: 0.373047
+
+Time components:
+---------------------------------------------------
+Allocation & Initialization: 2.565740e+00 (seconds)
+Circuit Operation:           5.614374e+01 (seconds)
+Deallocation:                2.568297e-02 (seconds)
+---------------------------------------------------
+MPI time. min: 38.63   max: 39.44  avrg: 39.08 secs 
+MPI transfer size. min: 3136.00   max: 3136.00  avrg: 3136.00 GB 
+MPI Bandwidth per rank. min: 79.51   max: 81.17  avrg: 80.26 GB/s 
+[0;31mE20250108 21:55:46.059978 140217886275648 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_2/rocprofv3_nqubit33_nnodes1_nmpi4/stats/rank_0/results_agent_info.csv
+[m[0;31mE20250108 21:55:46.060213 139629689071680 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_2/rocprofv3_nqubit33_nnodes1_nmpi4/stats/rank_2/results_agent_info.csv
+[m[0;31mE20250108 21:55:46.061840 139629689071680 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_2/rocprofv3_nqubit33_nnodes1_nmpi4/stats/rank_2/results_kernel_stats.csv
+[m[0;31mE20250108 21:55:46.061971 139629689071680 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_2/rocprofv3_nqubit33_nnodes1_nmpi4/stats/rank_2/results_kernel_trace.csv
+[m[0;31mE20250108 21:55:46.062264 140217886275648 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_2/rocprofv3_nqubit33_nnodes1_nmpi4/stats/rank_0/results_kernel_stats.csv
+[m[0;31mE20250108 21:55:46.062480 140217886275648 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_2/rocprofv3_nqubit33_nnodes1_nmpi4/stats/rank_0/results_kernel_trace.csv
+[m[0;31mE20250108 21:55:46.064692 139629689071680 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_2/rocprofv3_nqubit33_nnodes1_nmpi4/stats/rank_2/results_domain_stats.csv
+[m[0;31mE20250108 21:55:46.065871 140217886275648 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_2/rocprofv3_nqubit33_nnodes1_nmpi4/stats/rank_0/results_domain_stats.csv
+[m[0;31mE20250108 21:55:46.248089 140090309609536 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_2/rocprofv3_nqubit33_nnodes1_nmpi4/stats/rank_3/results_agent_info.csv
+[m[0;31mE20250108 21:55:46.250425 140090309609536 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_2/rocprofv3_nqubit33_nnodes1_nmpi4/stats/rank_3/results_kernel_stats.csv
+[m[0;31mE20250108 21:55:46.250571 140090309609536 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_2/rocprofv3_nqubit33_nnodes1_nmpi4/stats/rank_3/results_kernel_trace.csv
+[m[0;31mE20250108 21:55:46.252428 140090309609536 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_2/rocprofv3_nqubit33_nnodes1_nmpi4/stats/rank_3/results_domain_stats.csv
+[m[0;31mE20250108 21:55:46.255699 139778041620544 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_2/rocprofv3_nqubit33_nnodes1_nmpi4/stats/rank_1/results_agent_info.csv
+[m[0;31mE20250108 21:55:46.258239 139778041620544 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_2/rocprofv3_nqubit33_nnodes1_nmpi4/stats/rank_1/results_kernel_stats.csv
+[m[0;31mE20250108 21:55:46.258381 139778041620544 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_2/rocprofv3_nqubit33_nnodes1_nmpi4/stats/rank_1/results_kernel_trace.csv
+[m[0;31mE20250108 21:55:46.260053 139778041620544 output_file.cpp:102] Opened result file: /home/bvillase/benchmarks/quest/problem_2/rocprofv3_nqubit33_nnodes1_nmpi4/stats/rank_1/results_domain_stats.csv
+[m

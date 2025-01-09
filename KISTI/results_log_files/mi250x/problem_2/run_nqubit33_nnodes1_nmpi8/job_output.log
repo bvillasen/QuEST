@@ -1,0 +1,50 @@
+SLUM_NODES=1  NODE_LIST:x1001c2s6b0n0
+Starting SLURM job. Tue 07 Jan 2025 09:25:46 AM PST
+Setting environment for system: lockhart_mi250x
+QUEST_ROOT: /home/bvillase/code/kisti/QuEST
+Starting app run. Tue 07 Jan 2025 09:25:47 AM PST
+QUEST_SYSTEM=lockhart_mi250x
+QUEST_EXEC=/home/bvillase/code/kisti/QuEST/build_mi250x/quest_problem_2
+N_QUBIT=16
+Run command: srun -n 8 --cpu-bind=verbose --cpu-bind=mask_cpu:ff000000000000,ff00000000000000,ff0000,ff000000,ff,ff00,ff00000000,ff0000000000 /home/bvillase/code/kisti/QuEST/build_mi250x/quest_problem_2 16 |& tee /home/bvillase/benchmarks/quest/mi250x/problem_2/run_nqubit33_nnodes1_nmpi8/app_output.log
+Creating GPU Distributed environment. 
+-------------------------------------------------------------------------------
+Running BMT:
+	Hadamard-test circuit: Getting expectation of a certain unitary
+-------------------------------------------------------------------------------
+WARNING: No CPU allocation for stateVec arrays 
+
+-------------------
+Basic Configuration
+-------------------
+QUBITS:
+Number of qubits is 33.
+Number of amps is 8589934592.
+Number of amps per rank is 1073741824.
+EXECUTION ENVIRONMENT:
+Running locally on one node with GPU via custom kernels
+Number of ranks is 8
+OpenMP disabled
+Precision: size of qreal is 8 bytes
+
+------------------
+Running Circuit...
+------------------
+
+----------------------------------
+Printing Amplitudes & Finishing...
+----------------------------------
+Probability of qubit 0 being in state 0: 0.626953
+Probability of qubit 0 being in state 1: 0.373047
+
+Time components:
+---------------------------------------------------
+Allocation & Initialization: 8.923753e-01 (seconds)
+Circuit Operation:           8.038989e+01 (seconds)
+Deallocation:                2.899222e-02 (seconds)
+---------------------------------------------------
+MPI time. min: 52.71   max: 56.33  avrg: 54.49 secs 
+MPI transfer size. min: 2352.00   max: 2352.00  avrg: 2352.00 GB 
+MPI Bandwidth per rank. min: 41.75   max: 44.62  avrg: 43.20 GB/s 
+Finished app run. Tue 07 Jan 2025 09:27:10 AM PST
+Finished SLURM job. Tue 07 Jan 2025 09:27:10 AM PST
