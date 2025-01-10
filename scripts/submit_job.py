@@ -23,6 +23,7 @@ parser.add_argument('--n_mpi', dest='n_mpi', type=int, help='Number of MPI ranks
 parser.add_argument('--work_dir', dest='work_dir', type=str, help='Path of the work directory.', default=None )
 parser.add_argument('--use_nodes', dest='use_nodes', nargs='+', help='List of nodes to use for the run.', default=None )
 parser.add_argument('--exclude_nodes', dest='exclude_nodes', nargs='+', help='List of nodes to exclude for the run.', default=None )
+parser.add_argument('--profiler', dest='profiler', type=str, help='Type of profiler to use', default=None )
 args = parser.parse_args()
 
 system = args.system
@@ -45,6 +46,14 @@ if work_dir is None:
   print( 'ERROR: parameter `--work_dir` has to be specified ')
   exit(1)
 
+profiler = ''
+if args.profiler is not None:
+  if args.profiler == 'rocprofv3_stats': profiler = args.profiler
+  else:
+    print( f'ERROR: Invalid profiler: {args.profiler}')
+    sys.exit(1)
+
+
 n_nodes = args.n_nodes
 n_mpi_per_node = args.n_mpi
 n_mpi_total = n_nodes * n_mpi_per_node
@@ -53,10 +62,13 @@ use_nodes = args.use_nodes
 exclude_nodes = args.exclude_nodes
 
 if not os.path.isdir(work_dir): os.mkdir(work_dir)
-run_dir = f'{work_dir}/run_nqubit{n_qubit}_nnodes{n_nodes}_nmpi{n_mpi_total}'
+run_base_name = 'run'
+if profiler == 'rocprofv3_stats': run_base_name = 'rocprofv3'
+run_dir = f'{work_dir}/{run_base_name}_nqubit{n_qubit}_nnodes{n_nodes}_nmpi{n_mpi_total}'
 if not os.path.isdir(run_dir): os.mkdir(run_dir)
 work_dir = run_dir
 
+use_slurm = True
 if system == 'lockhart_cpu':
   slurm_template = slurm_templates.lockhart
   slurm_partition = ""
@@ -72,7 +84,13 @@ elif system == 'lockhart_mi300a':
   slurm_partition = '#SBATCH -p MI300'
   n_gpu_per_node = 4
   slurm_options = ''
-else: 
+elif system == 'pp_conductor':
+  slurm_template = slurm_templates.conductor
+  slurm_partition = ''
+  n_gpu_per_node = 4
+  slurm_options = ''
+  use_slurm = False
+else:   
   print(f'ERROR: System {system} is not supported.')
   exit(1)
 
@@ -95,6 +113,7 @@ print(f'n_nodes: {n_nodes}' )
 print(f'n_mpi_per_node: {n_mpi_per_node}' )
 print(f'use_nodes: {use_nodes}' )
 print(f'exclude_nodes: {exclude_nodes}' )
+print(f'profiler: {profiler}' )
 
 
 
@@ -104,10 +123,10 @@ export QUEST_ROOT={QUEST_ROOT}
 SYSTEM={system} source {QUEST_ROOT}/scripts/set_env.sh
 '''
 
-app_run_cmd = '''
+app_run_cmd = f'''
 # Call application run script
 echo "Starting app run. $(date)"
-BENCHMARK_PROB=PROBLEM N_QUBIT=NQUBIT N_MPI=NMPI WORK_DIR=WORKDIR bash ${QUEST_ROOT}/scripts/run_app.sh
+BENCHMARK_PROB=PROBLEM N_QUBIT=NQUBIT N_MPI=NMPI WORK_DIR=WORKDIR PROFILER={profiler} bash {QUEST_ROOT}/scripts/run_app.sh
 echo "Finished app run. $(date)"
 '''
 
@@ -143,7 +162,8 @@ file.close()
 time.sleep(0.5)
 print(f'Saved file: {file_name}')
 
-submit_cmnd = f'sbatch {file_name}'
+if use_slurm: submit_cmnd = f'sbatch {file_name}'
+else: submit_cmnd = f'bash {file_name}'
 print( f'Submitting job: {file_name}' )
-os.system( submit_cmnd )
+if use_slurm: os.system( submit_cmnd )
 

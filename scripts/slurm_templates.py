@@ -23,3 +23,12 @@ SLURM_SCRIPT_CONTENT
 
 echo "Finished SLURM job. $(date)"
 '''
+
+conductor='''#!/bin/bash
+
+echo "Starting job. $(date)"
+
+SLURM_SCRIPT_CONTENT
+
+echo "Finished job. $(date)"
+'''
