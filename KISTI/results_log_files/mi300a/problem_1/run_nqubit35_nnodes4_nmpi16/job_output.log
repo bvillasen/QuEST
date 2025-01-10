@@ -1,0 +1,187 @@
+SLUM_NODES=4  NODE_LIST:x1001c0s4b0n0,x1001c0s4b1n0,x1001c0s5b0n0,x1001c0s5b1n0
+Starting SLURM job. Thu 09 Jan 2025 10:44:20 AM PST
+Setting environment for system: lockhart_mi300a
+QUEST_ROOT: /home/bvillase/code/kisti/QuEST
+Starting app run. Thu 09 Jan 2025 10:44:20 AM PST
+QUEST_SYSTEM=lockhart_mi300a
+QUEST_EXEC=/home/bvillase/code/kisti/QuEST/build_mi300a/quest_problem_1
+N_QUBIT=35
+PROFILER_CMD=
+Run command: srun -n 16 /home/bvillase/code/kisti/QuEST/scripts/slurm_affinity_mi300a.sh  /home/bvillase/code/kisti/QuEST/build_mi300a/quest_problem_1 35 |& tee /home/bvillase/benchmarks/quest/mi300a/problem_1/run_nqubit35_nnodes4_nmpi16/app_output.log
+MPI_RANK: 0  MPI_SIZE: 4
+1
+rank_local=  0   GOMP_CPU_AFFINITY=  0-0:1   HIP_VISIBLE_DEVICES=  0
+MPI_RANK: 1  MPI_SIZE: 4
+1
+rank_local=  1   GOMP_CPU_AFFINITY=  24-24:1   HIP_VISIBLE_DEVICES=  1
+MPI_RANK: 2  MPI_SIZE: 4
+1
+rank_local=  2   GOMP_CPU_AFFINITY=  48-48:1   HIP_VISIBLE_DEVICES=  2
+MPI_RANK: 3  MPI_SIZE: 4
+1
+rank_local=  3   GOMP_CPU_AFFINITY=  72-72:1   HIP_VISIBLE_DEVICES=  3
+MPI_RANK: 3  MPI_SIZE: 4
+1
+MPI_RANK: 1  MPI_SIZE: 4
+rank_local=  3   GOMP_CPU_AFFINITY=  72-72:1   HIP_VISIBLE_DEVICES=  3
+1
+rank_local=  1   GOMP_CPU_AFFINITY=  24-24:1   HIP_VISIBLE_DEVICES=  1
+MPI_RANK: 2  MPI_SIZE: 4
+MPI_RANK: 0  MPI_SIZE: 4
+1
+rank_local=  2   GOMP_CPU_AFFINITY=  48-48:1   HIP_VISIBLE_DEVICES=  2
+1
+rank_local=  0   GOMP_CPU_AFFINITY=  0-0:1   HIP_VISIBLE_DEVICES=  0
+MPI_RANK: 2  MPI_SIZE: 4
+1
+rank_local=  2   GOMP_CPU_AFFINITY=  48-48:1   HIP_VISIBLE_DEVICES=  2
+MPI_RANK: 3  MPI_SIZE: 4
+1
+rank_local=  3   GOMP_CPU_AFFINITY=  72-72:1   HIP_VISIBLE_DEVICES=  3
+MPI_RANK: 1  MPI_SIZE: 4
+MPI_RANK: 0  MPI_SIZE: 4
+1
+rank_local=  1   GOMP_CPU_AFFINITY=  24-24:1   HIP_VISIBLE_DEVICES=  1
+1
+rank_local=  0   GOMP_CPU_AFFINITY=  0-0:1   HIP_VISIBLE_DEVICES=  0
+MPI_RANK: 3  MPI_SIZE: 4
+1
+rank_local=  3   GOMP_CPU_AFFINITY=  72-72:1   HIP_VISIBLE_DEVICES=  3
+MPI_RANK: 1  MPI_SIZE: 4
+MPI_RANK: 0  MPI_SIZE: 4
+1
+rank_local=  1   GOMP_CPU_AFFINITY=  24-24:1   HIP_VISIBLE_DEVICES=  1
+1
+rank_local=  0   GOMP_CPU_AFFINITY=  0-0:1   HIP_VISIBLE_DEVICES=  0
+MPI_RANK: 2  MPI_SIZE: 4
+1
+rank_local=  2   GOMP_CPU_AFFINITY=  48-48:1   HIP_VISIBLE_DEVICES=  2
+Creating GPU Distributed environment. 
+---------------------------------------------------------------------------------
+Running BMT:
+	Basic circuit involving a sequential conduction of X & CNOT gates
+---------------------------------------------------------------------------------
+WARNING: No CPU allocation for stateVec arrays 
+
+-------------------
+Basic Configuration
+-------------------
+QUBITS:
+Number of qubits is 35.
+Number of amps is 34359738368.
+Number of amps per rank is 2147483648.
+EXECUTION ENVIRONMENT:
+Running locally on one node with GPU via custom kernels
+Number of ranks is 16
+OpenMP disabled
+Precision: size of qreal is 8 bytes
+
+------------------
+Running Circuit...
+------------------
+loop = 1
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 2
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 3
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 4
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 5
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 6
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 7
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 8
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 9
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 10
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 11
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 12
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 13
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 14
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 15
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 16
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 17
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 18
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 19
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 20
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 21
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 22
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 23
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 24
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 25
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 26
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 27
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 28
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 29
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+loop = 30
+Probability amplitude of |1...1>: 1
+Probability amplitude of |1...1>: 0
+
+------------
+Finishing...
+------------
+
+Time components:
+---------------------------------------------------
+Allocation & Initialization: 3.666497e+00 (seconds)
+Circuit Operation:           2.662226e+02 (seconds)
+Deallocation:                4.418835e-03 (seconds)
+---------------------------------------------------
+MPI time. min: 221.42   max: 228.68  avrg: 227.04 secs 
+MPI transfer size. min: 7680.00   max: 7680.00  avrg: 7680.00 GB 
+MPI Bandwidth per rank. min: 33.58   max: 34.69  avrg: 33.83 GB/s 
+Finished app run. Thu 09 Jan 2025 10:48:54 AM PST
+Finished SLURM job. Thu 09 Jan 2025 10:48:54 AM PST
